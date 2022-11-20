@@ -1,0 +1,34 @@
+body {
+    width: 100%;
+    padding: 15px;
+}
+
+.gallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin: 20px 0;
+}
+
+.gallery__item {
+    width: calc(25% - 30px);
+}
+
+.photo-card {
+    width: 100%;
+    background-color: rgb(230, 230, 248);
+}
+
+.photo-card img{
+    width: 100%;
+}
+
+.info {
+    display: flex;
+    color: blue;
+    justify-content: center;
+    font-size: 12px;
+    gap: 8px;
+    margin-left: 8px;
+}
