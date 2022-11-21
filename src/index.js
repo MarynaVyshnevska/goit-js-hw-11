@@ -7,6 +7,7 @@ const refs = {
     searchForm: document.querySelector('.search-form'),
     gallery: document.querySelector('.gallery'),
     loadMore: document.querySelector('.load-more'),
+
 }
 
 refs.loadMore.style.display = 'none';
@@ -16,6 +17,10 @@ let totalShown = 0;
 let myPage = 1;
 
 refs.searchForm.addEventListener('submit', onInputSearch);
+refs.searchForm.addEventListener('input', onInputEnter);
+refs.loadMore.addEventListener('click', onLoadMore);
+
+
 
 function onInputSearch(event) {
     event.preventDefault();
@@ -27,11 +32,10 @@ function onInputSearch(event) {
     // Если поиск не заполнен, то вывода нет (обнуляем любой поиск), иначе - рисуем? djpvj;yj
     if (!query) {
         refs.gallery.innerHTML = '';
-        refs.loadMore.style.display = 'none';
         return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
     } else {
         downloadFromPixabay(query);
-        console.log("тут буду рисовать")
+        // console.log("тут буду рисовать")
     }
 
 }
@@ -55,18 +59,13 @@ async function downloadFromPixabay(query, myPage) {
     try {
         const findArray = await axios.get(BASE_URL, options);
         totalShown += findArray.data.hits.length;
+        console.log(totalShown);
 
-        console.log(findArray.data);
-        console.log(findArray.data.hits.length);
-        console.log(findArray.data.total);
-
-
-        // forMessage(
-        //     findArray.data.hits.length,
-        //     totalShown,
-        //     options.params.per_page,
-        //     findArray.data.total
-        // );
+        messageAboutResult(
+            findArray.data.hits.length,
+            totalShown,
+            findArray.data.total
+        );
         
         if (findArray.data.hits.length < 1) {
             return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
@@ -109,14 +108,14 @@ function createGallery(pictures) {
             `;
         })
         .join('');
-    console.log(markup);
+    // console.log(markup);
     refs.gallery.insertAdjacentHTML('beforeend', markup);
     gallerySimpleLightBox.refresh();
 
 
 }
 
-//  Modal window
+//  Modal window in gallery
 let gallerySimpleLightBox = new SimpleLightbox('.gallery a', {
     /* options */
     captionsData: 'alt',
@@ -125,3 +124,51 @@ let gallerySimpleLightBox = new SimpleLightbox('.gallery a', {
     scaleImageToRatio: true,
 
 });
+
+function messageAboutResult(length, shown, total) {
+    console.log('total', total);
+    console.log('shown', shown);
+    if (length < 1) {
+        Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        console.log("Sorry, there are no images matching your search query. Please try again.")
+    }
+    if(shown >= 1) {
+        Notiflix.Notify.info(`"Hooray! We found ${total} images."`);
+        console.log(`"Hooray! We found ${total} images."`)
+    }
+    if (total > shown) {
+        refs.loadMore.style.display = 'flex';
+
+    }
+    if (totalShown === total) {
+        refs.loadMore.style.display = 'none';
+        Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
+        console.log("We're sorry, but you've reached the end of search results.")
+    }
+}
+
+// button loadMore
+function onLoadMore() {
+    myPage += 1;
+    const query = refs.searchForm.querySelector('input').value;
+    downloadFromPixabay(query, myPage);
+    // console.log(myPage);
+}
+
+// бесконечный скролл
+window.addEventListener('scroll', () => {
+    const { scrollHeight, scrollTop, clientHeight } = document.documentElement
+    if(scrollHeight - clientHeight === scrollTop) {
+        onLoadMore()
+    }
+})
+
+    // если во время вівода одного запроса вводим другой
+    // - удаляется весь предідущтй вівод фото
+function onInputEnter(evt) {
+    const q = refs.searchForm.querySelector('input').value;
+    if (q.length <= 1) {
+        refs.gallery.innerHTML = '';
+        refs.loadMore.style.display = 'none';
+    }
+}

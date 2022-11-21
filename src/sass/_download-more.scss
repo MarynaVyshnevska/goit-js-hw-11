@@ -1,0 +1,28 @@
+footer {
+    display: flex;
+    justify-content: center;
+}
+.load-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px;
+    border-radius: 50%;
+    color: white;
+    background-color: blue;
+    border: none;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+}
+
+.load-more:hover {
+    background-color: white;
+    color: blue;
+}
+
+.load-more:focus {
+    background-color: rgb(226, 226, 246);
+    color: blue;
+    text-transform: uppercase;
+}
