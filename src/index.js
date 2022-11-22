@@ -2,6 +2,7 @@ import axios from "axios";
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import OnlyScroll from 'only-scrollbar';
 
 const refs = {
     searchForm: document.querySelector('.search-form'),
@@ -153,6 +154,15 @@ function onLoadMore() {
     const query = refs.searchForm.querySelector('input').value;
     downloadFromPixabay(query, myPage);
     // console.log(myPage);
+    // плавная прокрутка
+    const { height: cardHeight } = document
+        .querySelector(".gallery")
+        .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+        top: cardHeight * 2,
+        behavior: "smooth",
+    });
 }
 
 // бесконечный скролл
@@ -172,3 +182,38 @@ function onInputEnter(evt) {
         refs.loadMore.style.display = 'none';
     }
 }
+// плавная прокрутка
+// const { height: cardHeight } = document
+//   .querySelector(".gallery")
+//   .firstElementChild.getBoundingClientRect();
+
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: "smooth",
+// });
+
+// alert( window.innerWidth ); // полная ширина окна
+// alert( document.documentElement.clientWidth ); // ширина окна за вычетом полосы прокрутки
+// getBoundingClientRect()
+// Метод elem.getBoundingClientRect() возвращает координаты
+// в контексте окна для минимального по размеру прямоугольника,
+// который заключает в себе элемент elem, в виде объекта встроенного
+// класса DOMRect. https://learn.javascript.ru/coordinates
+
+// window.scrollBy https://learn.javascript.ru/size-and-scroll-window
+// Метод scrollBy(x, y) прокручивает страницу относительно её текущего
+// положения.Например, scrollBy(0, 10) прокручивает страницу на 10px вниз.
+// Задание scroll - behavior через JavaScript
+// https://www.kobzarev.com/programming/scroll-behavior/
+// window.scrollBy({
+//     top: 666,
+//     behavior: 'smooth'
+// });
+// Или так:
+// window.scrollTo( 0, 999, {
+//     behavior: 'smooth'
+// });
+// Возможные значения scroll-behavior
+// auto	На усмотрение браузера
+// instant	Мгновенная прокрутка
+// smooth	Плавная прокрутка
